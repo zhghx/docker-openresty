@@ -1,7 +1,6 @@
 
 #user  nobody;
 worker_processes  1;
-worker_rlimit_nofile 10240;
 
 #error_log  logs/error.log;
 #error_log  logs/error.log  notice;
@@ -33,77 +32,18 @@ http {
 
     #gzip  on;
 
-	#hx-server集群
-	upstream hx-server {
-    	least_conn;
-    	server '127.0.0.1:5566';
-	}
-
-	#日本公司项目
-	server {
-		listen 7797;
-		server_name localhost;
-		client_max_body_size 200m;
-
-		#前端页面(日本项目)
-        location / {
-			root /Users/zhenghegong/CODE/japen_project/smartdemand/build;
-			index index.html;
-        }
-	}
-
     server {
-        listen       7796;
+        listen       80;
         server_name  localhost;
 
         #charset koi8-r;
 
         #access_log  logs/host.access.log  main;
 
-    	gzip            on;
-    	gzip_types      text/plain application/xml text/css application/javascript;
-    	gzip_min_length 1000;	
-
-        #location / {
-        #    root   html;
-        #    index  index.html index.htm;
-        #}
-		
         location / {
-			try_files $uri $uri/ /index.html;
+            root   html;
+            index  index.html index.htm;
         }
-
-		location /MP_verify_byNbsYBpCE36p5Fk.txt {
-            return 200 "byNbsYBpCE36p5Fk";
-        }
-
-		#前端页面(zhg简历)
-        location /zhg-cv {
-			root /Users/zhenghegong/WebstormProjects/;
-        }
-
-		#前端页面
-        location /ewt-view {
-			root /Users/zhenghegong/WebstormProjects/ewt-view/;
-        }
-
-		#hx服务
-		location /hx {
-    		proxy_set_header Host $host;
-    		proxy_set_header X-Real-Ip $remote_addr;
-    		proxy_set_header X-Forwarded-For $remote_addr;
-    		proxy_pass http://hx-server;
-		}
-
-		#API接口
-		location /app {
-    		proxy_set_header Host $host;
-    		proxy_set_header X-Real-Ip $remote_addr;
-    		proxy_set_header X-Forwarded-For $remote_addr;
-    		proxy_pass http://apps.sinolulin.cn:8070/app;
-		}
-
-
 
         #error_page  404              /404.html;
 
